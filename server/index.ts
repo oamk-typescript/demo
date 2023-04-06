@@ -7,7 +7,7 @@ const app: Express = express()
 app.use(cors())
 app.use(express.static("public"))
 
-const port = 3001
+const port = 3003
 
 app.get("/",(req: Request,res: Response) => {
   const pool = openDb()

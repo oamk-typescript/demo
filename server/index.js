@@ -9,7 +9,7 @@ const pg_1 = require("pg");
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.static("public"));
-const port = 3001;
+const port = 3003;
 app.get("/", (req, res) => {
     const pool = openDb();
     pool.query('select * from image', (error, result) => {
