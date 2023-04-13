@@ -33,10 +33,11 @@ app.post("/upload",(req: Request,res: Response) => {
     return
   }
 
-  const file = req.files.image as UploadedFile
-  const name = file.name
+  const title: string = req.body.title
+  const file: UploadedFile = req.files.image as UploadedFile
+  const name: string = file.name
   //const uploadPath = './public/images/' + name
-  const uploadPath = `./public/images/${name}`
+  const uploadPath: string = `./public/images/${name}`
 
   file.mv(uploadPath,(err) => {
     if (err) {
@@ -46,7 +47,16 @@ app.post("/upload",(req: Request,res: Response) => {
     }
   })
 
-  res.sendStatus(200)  
+  const pool = openDb()
+
+  pool.query('insert into image (title,name) values ($1,$2) returning *',[title,name],(error: Error,result: QueryResult) => {
+    if (error) {
+      res.statusMessage = error.message
+      res.status(500).json({error: error.message})
+      return
+    }
+    res.status(200).json({id: result.rows[0].id,title: title,name: name})
+  })
 })
 
 app.listen(port)

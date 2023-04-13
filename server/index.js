@@ -31,6 +31,7 @@ app.post("/upload", (req, res) => {
         res.sendStatus(400);
         return;
     }
+    const title = req.body.title;
     const file = req.files.image;
     const name = file.name;
     //const uploadPath = './public/images/' + name
@@ -42,7 +43,15 @@ app.post("/upload", (req, res) => {
             return;
         }
     });
-    res.sendStatus(200);
+    const pool = openDb();
+    pool.query('insert into image (title,name) values ($1,$2) returning *', [title, name], (error, result) => {
+        if (error) {
+            res.statusMessage = error.message;
+            res.status(500).json({ error: error.message });
+            return;
+        }
+        res.status(200).json({ id: result.rows[0].id, title: title, name: name });
+    });
 });
 app.listen(port);
 const openDb = () => {
