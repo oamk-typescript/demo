@@ -13,9 +13,21 @@ app.use(express.static("public"))
 
 const port = 3003
 
+/* app.get("/foo"),(req: Request,res: Response) => {
+  res.status(200).json({"message":"success"})
+} */
+
+
 app.get("/",(req: Request,res: Response) => {
   const pool = openDb()
-  pool.query('select * from image',(error: Error,result: QueryResult) => {
+  const sql = `
+  select 
+  id,title,name, 
+  (select count(id) from comment where image_id = image.id) as comment_count
+  from image
+  `
+  
+  pool.query(sql,(error: Error,result: QueryResult) => {
     if (error) {
       res.statusMessage = error.message
       res.status(500).json({error: error.message})
@@ -24,6 +36,28 @@ app.get("/",(req: Request,res: Response) => {
     res.status(200).json(result.rows)
   })
 })
+
+app.get("/get/:id"),(req: Request,res: Response) => {
+  const id = req.params.id
+  const pool = openDb()
+  const sql = `
+  select i.id,i.title,i.name,
+  (select jsonb_agg(json_build_object('comment',comment_text,'saved',saved) 
+  order by saved desc) from comment where image_id = i.id) as comments
+  from image i
+  where i.id = $1
+  `
+  
+  pool.query(sql,[id],(error: Error,result: QueryResult) => {
+    if (error) {
+      res.statusMessage = error.message
+      res.status(500).json({error: error.message})
+      return
+    }
+    res.status(200).json(result.rows)
+  })
+}
+
 
 
 app.post("/upload",(req: Request,res: Response) => {

@@ -33,7 +33,7 @@ class Gallery {
       })
         .then(response => response.json()) 
         .then((response) => {
-          const gallery_image = new Gallery_Image(response.id,response.title,response.name)
+          const gallery_image = new Gallery_Image(response.id,response.title,response.name,0)
           this.images.push(gallery_image)
           resolve(response)
         },(error) => {
@@ -44,7 +44,7 @@ class Gallery {
 
   #readJson(imagesAsJson: any): void {
     imagesAsJson.forEach(element => {
-      const gallery_image: Gallery_Image = new Gallery_Image(element.id,element.title,element.name)
+      const gallery_image: Gallery_Image = new Gallery_Image(element.id,element.title,element.name,element.comment_count)
       this.images.push(gallery_image)
     });
   }
