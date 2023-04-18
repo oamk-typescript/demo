@@ -78,6 +78,19 @@ app.post("/upload", (req, res) => {
         res.status(200).json({ id: result.rows[0].id, title: title, name: name });
     });
 });
+app.post("/comment/add", (req, res) => {
+    const text = req.body.text;
+    const image_id = req.body.image_id;
+    const pool = openDb();
+    pool.query('insert into comment (comment_text,image_id) values ($1,$2) returning *', [text, image_id], (error, result) => {
+        if (error) {
+            res.statusMessage = error.message;
+            res.status(500).json({ error: error.message });
+            return;
+        }
+        res.status(200).json({ id: result.rows[0].id, comment_text: text, image_id: image_id, saved: result.rows[0].saved });
+    });
+});
 app.listen(port);
 const openDb = () => {
     const pool = new pg_1.Pool({

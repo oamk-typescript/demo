@@ -1,0 +1,12 @@
+### Get all images
+GET http://localhost:3003 HTTP/1.1
+
+### Add new comment
+POST http://localhost:3003/comment/add HTTP/1.1
+Content-Type: application/json
+
+{
+  "text": "This is test comment from Rest client",
+  "image_id": 4
+}
+

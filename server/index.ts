@@ -90,6 +90,23 @@ app.post("/upload",(req: Request,res: Response) => {
   })
 })
 
+app.post("/comment/add",(req: Request,res: Response) => {
+  const text: string = req.body.text
+  const image_id: string = req.body.image_id
+
+  const pool = openDb()
+
+  pool.query('insert into comment (comment_text,image_id) values ($1,$2) returning *',[text,image_id],
+  (error: Error,result: QueryResult) => {
+    if (error) {
+      res.statusMessage = error.message
+      res.status(500).json({error: error.message})
+      return
+    }
+    res.status(200).json({id: result.rows[0].id,comment_text: text,image_id: image_id,saved:result.rows[0].saved})
+  })
+})
+
 app.listen(port)
 
 const openDb = (): Pool => {

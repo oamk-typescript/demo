@@ -1,5 +1,7 @@
 import { Gallery } from "./class/Gallery.js"
 import { Gallery_Image } from "./class/Gallery_Image.js"
+import { CommentForImage } from "./class/CommentForImage.js"
+import { Image_Comment } from "./class/Image-Comment.js"
 
 const BACKEND_ROOT_URL = 'http://localhost:3003'
 
@@ -13,6 +15,7 @@ const image_id_input = <HTMLInputElement>document.querySelector('#image_id')
 const new_input = <HTMLInputElement>document.querySelector('#new')
 
 const gallery: Gallery = new Gallery(BACKEND_ROOT_URL)
+const comment: CommentForImage = new CommentForImage(BACKEND_ROOT_URL)
 
 image_id_input.value = image_id.toString()
 
@@ -79,3 +82,29 @@ const addCol = (value: any): HTMLTableCellElement  => {
   td.innerHTML = value
   return td
 }
+
+
+new_input.addEventListener('keypress',event => {
+  if (event.key === "Enter") {
+    event.preventDefault()
+    const text: string = new_input.value.trim()
+    const image_id: string = image_id_input.value
+
+    comment.add(text,image_id).then((value: Image_Comment) => {
+      const table = addTable()
+      const saved = new Date(value.saved)
+      const saved_formatted = saved.toLocaleDateString('fi-FI') + ' ' + saved.toLocaleTimeString('fi-FI')
+      console.log(value)
+      const tr: HTMLTableRowElement = addRow(value.text,saved_formatted)
+      table.prepend(tr)
+      new_input.value = ""
+    }).catch (error => {
+      alert(error)
+    })
+
+
+    
+
+
+  }
+})

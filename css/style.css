@@ -5,3 +5,7 @@ img {
 .buttons {
   margin-top: 30px;
 }
+
+#details,#comments {
+  margin-bottom: 30px;
+}
