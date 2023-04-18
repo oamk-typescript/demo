@@ -14,9 +14,6 @@ app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, express_fileupload_1.default)());
 app.use(express_1.default.static("public"));
 const port = 3003;
-/* app.get("/foo"),(req: Request,res: Response) => {
-  res.status(200).json({"message":"success"})
-} */
 app.get("/", (req, res) => {
     const pool = openDb();
     const sql = `
@@ -34,7 +31,7 @@ app.get("/", (req, res) => {
         res.status(200).json(result.rows);
     });
 });
-app.get("/get/:id"), (req, res) => {
+app.get("/get/:id", (req, res) => {
     const id = req.params.id;
     const pool = openDb();
     const sql = `
@@ -52,7 +49,7 @@ app.get("/get/:id"), (req, res) => {
         }
         res.status(200).json(result.rows);
     });
-};
+});
 app.post("/upload", (req, res) => {
     if (!req.files) {
         res.statusMessage = "Image was not received";

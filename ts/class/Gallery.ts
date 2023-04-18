@@ -21,6 +21,20 @@ class Gallery {
     })
   }
 
+  getImage = async(id: number) => {
+    return new Promise(async(resolve,reject) => {
+      fetch(this.#backend_url + '/get/' + id.toString())
+      .then(response => response.json()) 
+      .then((response) => {
+        const comments = response[0].comments ? response[0].comments as Array<any>: []
+        resolve(new Gallery_Image(response[0].id,response[0].title,response[0].name,comments.length,comments))
+      },(error: Error) => {
+        reject(error)  
+      })
+    })
+  }
+
+
   addImage = async(title: string,image: File) => {
     return new Promise(async(resolve,reject) => {
       const formData: FormData = new FormData()
@@ -33,7 +47,7 @@ class Gallery {
       })
         .then(response => response.json()) 
         .then((response) => {
-          const gallery_image = new Gallery_Image(response.id,response.title,response.name,0)
+          const gallery_image = new Gallery_Image(response.id,response.title,response.name,0,[])
           this.images.push(gallery_image)
           resolve(response)
         },(error) => {
@@ -44,7 +58,7 @@ class Gallery {
 
   #readJson(imagesAsJson: any): void {
     imagesAsJson.forEach(element => {
-      const gallery_image: Gallery_Image = new Gallery_Image(element.id,element.title,element.name,element.comment_count)
+      const gallery_image: Gallery_Image = new Gallery_Image(element.id,element.title,element.name,element.comment_count,[])
       this.images.push(gallery_image)
     });
   }

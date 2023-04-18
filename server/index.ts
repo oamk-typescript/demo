@@ -13,9 +13,6 @@ app.use(express.static("public"))
 
 const port = 3003
 
-/* app.get("/foo"),(req: Request,res: Response) => {
-  res.status(200).json({"message":"success"})
-} */
 
 
 app.get("/",(req: Request,res: Response) => {
@@ -35,9 +32,9 @@ app.get("/",(req: Request,res: Response) => {
     }
     res.status(200).json(result.rows)
   })
-})
+}) 
 
-app.get("/get/:id"),(req: Request,res: Response) => {
+ app.get("/get/:id",(req: Request,res: Response) => {
   const id = req.params.id
   const pool = openDb()
   const sql = `
@@ -56,7 +53,7 @@ app.get("/get/:id"),(req: Request,res: Response) => {
     }
     res.status(200).json(result.rows)
   })
-}
+}) 
 
 
 
